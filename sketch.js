@@ -1,13 +1,14 @@
 let config = {
-	sqrRes: 10,
-	xRes: 1000,
-	yRes: 500
+	sqrRes: 5,
+	xRes: 2000,
+	yRes: 1000
 };
 
 let grid = {
 	nCol: null,
 	nRow: null,
 	content: null,
+	oldContent: null, 
 
 	countAliveNeighbors: function (col, row) {
 		//TODO: improve this
@@ -48,26 +49,32 @@ function setup() {
 	grid.nCol = width / config.sqrRes;
 	grid.nRow = height / config.sqrRes;
 	grid.content = makeGridArray(grid.nCol, grid.nRow);
+	grid.oldContent = makeGridArray(grid.nCol, grid.nRow);
 
 	for (let i = 0; i < grid.nCol; i++) {
 		for (let j = 0; j < grid.nRow; j++) {
 			grid.content[i][j] = floor(random(2));
+			grid.oldContent[i][j] = grid.content[i][j] === 0 ? 1 : 0;
 		}
 	}
+
+	background(0);
 }
 
 function draw() {
-	background(0);
+	
 
 	//drawing of the squares
 	for (let i = 0; i < grid.nCol; i++) {
 		for (let j = 0; j < grid.nRow; j++) {
-			let x = i * config.sqrRes;
-			let y = j * config.sqrRes;
-			
-			fill(grid.content[i][j] === 1 ? 255 : 0);
-			stroke(128, 128, 128);
-			rect(x, y, config.sqrRes, config.sqrRes)		
+			if(grid.content[i][j] !== grid.oldContent[i][j]){
+				let x = i * config.sqrRes;
+				let y = j * config.sqrRes;
+				
+				fill(grid.content[i][j] === 1 ? 255 : 0);
+				stroke(128, 128, 128);
+				rect(x, y, config.sqrRes, config.sqrRes)		
+			}
 		}
 	}
 
@@ -89,5 +96,6 @@ function draw() {
 		}
 	}	
 
+	grid.oldContent = grid.content;
 	grid.content = newGrid;
 }
